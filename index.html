@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gourmet Prestige | Elite</title>
+    
+    <link rel="stylesheet" href="index.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loader">
+        <img src="../assets/img/logo-restaurante.png" alt="Logo" class="img-1x1">
+    </div>
+
+    <nav class="nav-core">
+        <div class="nav-wrap">
+            <img src="../assets/img/logo-restaurante.png" alt="Logo" class="logo-min">
+            <div class="links">
+                <a href="index.html">INICIO</a>
+                <a href="carta.html">CARTA</a>
+                <a href="contacto.html">RESERVA</a>
+                <a href="admin.html">ADMIN</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="hero-master">
+        <div class="chef-bg">
+            <img src="../assets/img/chef-cocinando.jpg" alt="Chef" class="img-1x1-cover">
+            <div class="overlay"></div>
+        </div>
+
+        <div class="content-center">
+            <h1 class="glitch-gold">GOURMET PRESTIGE</h1>
+            <div class="btn-group">
+                <button class="btn-luxury" onclick="location.href='carta.html'">ORDENAR AHORA</button>
+                
+                <button class="btn-minimal" id="btn-discover">DESCUBRIR MÁS</button>
+            </div>
+        </div>
+    </main>
+
+    <section id="info-section" class="details-area">
+        <div class="center-content-v">
+            <h2 class="gold-subtitle">EXCELENCIA GASTRONÓMICA</h2>
+            <p class="premium-text">Un ambiente diseñado para los paladares más exigentes, donde la tecnología de Firebase y el arte culinario se fusionan.</p>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyBks0ouNuDD8iNtym6ITR3YRTBJLQM4uuk",
+            authDomain: "restaurante-e06fb.firebaseapp.com",
+            projectId: "restaurante-e06fb",
+            storageBucket: "restaurante-e06fb.firebasestorage.app",
+            messagingSenderId: "264187825636",
+            appId: "1:264187825636:web:84d5c19837a04253114bf1"
+        };
+        initializeApp(firebaseConfig);
+    </script>
+    
+    <script src="index.js"></script>
+</body>
+</html>

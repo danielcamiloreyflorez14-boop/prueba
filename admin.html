@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Master Admin | Control de Operaciones</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="assets/img/logo-restaurante.png" alt="Logo" class="admin-logo">
+            <span class="status-indicator">ON-LINE</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <p class="group-title">OPERACIONES</p>
+                <a href="#" class="nav-link active"><i class="fas fa-fire"></i> Cocina en Vivo</a>
+                <a href="#" class="nav-link"><i class="fas fa-history"></i> Historial</a>
+            </div>
+            <div class="nav-group">
+                <p class="group-title">SISTEMA</p>
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Ver Sitio Web</a>
+                <button id="logoutBtn" class="nav-link logout"><i class="fas fa-power-off"></i> Cerrar Sesión</button>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="admin-main-content">
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <h1>Panel de Control de Cocina</h1>
+                <p id="current-date"></p>
+            </div>
+            <div class="topbar-metrics">
+                <div class="metric-box">
+                    <span class="label">PAGADOS</span>
+                    <span class="value" id="count-paid">0</span>
+                </div>
+                <div class="metric-box gold">
+                    <span class="label">EN COCCIÓN</span>
+                    <span class="value" id="count-cooking">0</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="orders-container">
+            <div class="orders-grid" id="admin-orders-grid">
+                <div class="loading-placeholder">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <p>Sincronizando con Firebase Realtime...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-detail" class="admin-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="order-detail-view"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBks0ouNuDD8iNtym6ITR3YRTBJLQM4uuk",
+            authDomain: "restaurante-e06fb.firebaseapp.com",
+            projectId: "restaurante-e06fb",
+            storageBucket: "restaurante-e06fb.firebasestorage.app",
+            messagingSenderId: "264187825636",
+            appId: "1:264187825636:web:84d5c19837a04253114bf1",
+            databaseURL: "https://restaurante-e06fb-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const ordersRef = ref(db, 'pedidos_activos');
+
+        onValue(ordersRef, (snapshot) => {
+            const grid = document.getElementById('admin-orders-grid');
+            grid.innerHTML = '';
+            let paid = 0; let cooking = 0;
+
+            if (!snapshot.exists()) {
+                grid.innerHTML = '<div class="no-orders">Sin pedidos pendientes de pago.</div>';
+                return;
+            }
+
+            snapshot.forEach((childSnapshot) => {
+                const orderId = childSnapshot.key;
+                const order = childSnapshot.val();
+                
+                if (order.cocina === "ESPERA") paid++;
+                if (order.cocina === "PREPARANDO") cooking++;
+
+                const card = document.createElement('div');
+                card.className = `order-card state-${order.cocina.toLowerCase()}`;
+                card.innerHTML = `
+                    <div class="order-header">
+                        <span class="order-time">${new Date(order.timestamp).toLocaleTimeString()}</span>
+                        <span class="payment-badge"><i class="fas fa-check-double"></i> PAGADO</span>
+                    </div>
+                    <div class="order-body">
+                        <h3>${order.nombre}</h3>
+                        <p class="order-meta"><i class="fas fa-clock"></i> ${order.hora}</p>
+                        <p class="order-note">${order.nota || 'Sin notas adicionales'}</p>
+                    </div>
+                    <div class="order-actions">
+                        <button onclick="updateStatus('${orderId}', 'PREPARANDO')" class="btn-action prepare">COCINAR</button>
+                        <button onclick="updateStatus('${orderId}', 'LISTO')" class="btn-action ready">LISTO</button>
+                        <button onclick="deleteOrder('${orderId}')" class="btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('count-paid').innerText = paid;
+            document.getElementById('count-cooking').innerText = cooking;
+        });
+
+        window.updateStatus = (id, newStatus) => {
+            const itemRef = ref(db, `pedidos_activos/${id}`);
+            update(itemRef, { cocina: newStatus });
+        };
+
+        window.deleteOrder = (id) => {
+            if(confirm("¿Seguro que desea archivar este pedido?")) {
+                const itemRef = ref(db, `pedidos_activos/${id}`);
+                remove(itemRef);
+            }
+        };
+
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    </script>
+</body>
+</html>

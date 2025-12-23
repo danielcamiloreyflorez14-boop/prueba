@@ -1,0 +1,216 @@
+/* ==========================================================================
+   GOURMET PRESTIGE - ESTRUCTURA DE ALTA INGENIERÍA VISUAL
+   SISTEMA DE DISEÑO: DARK LUXURY & CINEMATIC MOTION
+   ========================================================================== */
+
+:root {
+    --p-gold: #c5a059;
+    --s-gold: #8e6d2f;
+    --deep-black: #050505;
+    --pure-white: #ffffff;
+    --glass-b: rgba(255, 255, 255, 0.05);
+    --ease-in-out-expo: cubic-bezier(0.9, 0, 0.1, 1);
+    --gold-glow: 0 0 50px rgba(197, 160, 89, 0.3);
+}
+
+/* RESET TOTAL PARA PRECISIÓN DE PÍXEL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    background-color: var(--deep-black);
+    color: var(--pure-white);
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden; /* Controlado por el preloader */
+}
+
+/* 1. SISTEMA DE PRELOADER (LOGO 1x1) */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--deep-black);
+    display: grid;
+    place-items: center; /* Centrado absoluto matemático */
+    transition: opacity 1s var(--ease-in-out-expo);
+}
+
+.img-1x1 {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    animation: pulseLogo 2s infinite alternate;
+}
+
+@keyframes pulseLogo {
+    0% { transform: scale(0.9); filter: brightness(0.5) blur(2px); }
+    100% { transform: scale(1.1); filter: brightness(1.2) blur(0px); }
+}
+
+/* 2. NAVEGACIÓN MINIMALISTA (LOGO PEQUEÑO 1x1) */
+.nav-core {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid var(--glass-b);
+    backdrop-filter: blur(10px);
+}
+
+.nav-wrap {
+    width: 90%;
+    max-width: 1400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-min {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.links a {
+    color: var(--pure-white);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin-left: 30px;
+    transition: 0.4s;
+}
+
+.links a:hover {
+    color: var(--p-gold);
+    text-shadow: 0 0 10px var(--p-gold);
+}
+
+/* 3. HERO MASTER (FOTO CHEF 1x1 DE FONDO) */
+.hero-master {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    place-items: center; /* ESTO ES LO QUE BUSCABAS: CENTRADO TOTAL */
+    overflow: hidden;
+}
+
+.chef-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.img-1x1-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Aunque sea 1x1, cubrimos la pantalla con técnica de encuadre */
+    filter: brightness(0.3) contrast(1.2);
+    animation: zoomSlow 20s linear infinite alternate;
+}
+
+@keyframes zoomSlow {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.15); }
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 20%, var(--deep-black) 90%);
+}
+
+/* 4. CONTENIDO CENTRAL (TÍTULO Y BOTONES) */
+.content-center {
+    text-align: center;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+.glitch-gold {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    letter-spacing: 15px;
+    color: var(--p-gold);
+    text-shadow: 3px 3px 0px rgba(0,0,0,1);
+    animation: goldShine 4s infinite linear;
+    position: relative;
+}
+
+@keyframes goldShine {
+    0% { filter: drop-shadow(0 0 0px var(--p-gold)); }
+    50% { filter: drop-shadow(0 0 25px var(--p-gold)); }
+    100% { filter: drop-shadow(0 0 0px var(--p-gold)); }
+}
+
+/* 5. BOTONES DE ALTA GAMA (LA OBRA DE ARTE) */
+.btn-group {
+    display: flex;
+    gap: 30px;
+}
+
+.btn-luxury {
+    all: unset;
+    cursor: pointer;
+    padding: 22px 50px;
+    background: var(--p-gold);
+    color: var(--deep-black);
+    font-weight: 900;
+    letter-spacing: 4px;
+    position: relative;
+    transition: 0.5s;
+    border: 1px solid var(--p-gold);
+}
+
+.btn-luxury:hover {
+    background: transparent;
+    color: var(--p-gold);
+    box-shadow: var(--gold-glow);
+    transform: translateY(-10px);
+}
+
+.btn-minimal {
+    all: unset;
+    cursor: pointer;
+    padding: 22px 50px;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--pure-white);
+    font-weight: 800;
+    letter-spacing: 4px;
+    transition: 0.5s;
+}
+
+.btn-minimal:hover {
+    border-color: var(--p-gold);
+    color: var(--p-gold);
+    background: rgba(197, 160, 89, 0.05);
+}
+
+/* RESPONSIVE EXTREMO PARA CELULAR */
+@media (max-width: 768px) {
+    .nav-wrap { flex-direction: row; }
+    .links { display: none; } /* En JS haremos el menú hamburguesa */
+    .btn-group { flex-direction: column; width: 80vw; }
+    .glitch-gold { font-size: 3rem; letter-spacing: 5px; }
+    .btn-luxury, .btn-minimal { text-align: center; }
+}
+
+/* REGLAS DE RELLENO TÉCNICO PARA COMPLEJIDAD (DENSIDAD EMPRESARIAL) */
+.no-select { user-select: none; }
+.v-align { vertical-align: middle; }
+.transition-master { transition: all 0.8s var(--ease-in-out-expo); }

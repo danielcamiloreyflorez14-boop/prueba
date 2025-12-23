@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reserva & Pago Seguro | Gourmet Prestige</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="contact-ultra-pro">
+
+    <div class="background-animation"></div>
+
+    <nav class="nav-glass">
+        <div class="nav-content">
+            <a href="index.html" class="brand"><img src="assets/img/logo-restaurante.png" alt="Logo"></a>
+            <div class="step-indicator">
+                <span class="step active">1. Datos</span>
+                <span class="step">2. Pago</span>
+                <span class="step">3. Confirmación</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-contact-container">
+        <section class="booking-card" id="form-container">
+            <div class="card-header">
+                <h2>SOLICITUD DE MESA VIP</h2>
+                <p>Complete el registro para proceder al pago y preparación.</p>
+            </div>
+
+            <form id="masterBookingForm" class="pro-form">
+                <div class="form-grid">
+                    <div class="input-box" data-aos="fade-up">
+                        <label><i class="fas fa-user"></i> Nombre Titular</label>
+                        <input type="text" id="clientName" placeholder="Ej. Juan Pérez" required>
+                    </div>
+
+                    <div class="input-box" data-aos="fade-up">
+                        <label><i class="fas fa-envelope"></i> Email Corporativo</label>
+                        <input type="email" id="clientEmail" placeholder="juan@empresa.com" required>
+                    </div>
+
+                    <div class="input-box" data-aos="fade-up">
+                        <label><i class="fas fa-calendar-day"></i> Fecha de Reserva</label>
+                        <input type="date" id="resDate" required>
+                    </div>
+
+                    <div class="input-box" data-aos="fade-up">
+                        <label><i class="fas fa-clock"></i> Hora de llegada</label>
+                        <input type="time" id="resTime" required>
+                    </div>
+                </div>
+
+                <div class="payment-simulation" id="paymentSection">
+                    <h3>MÉTODO DE PAGO PREVIO</h3>
+                    <div class="card-input-wrapper">
+                        <input type="text" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" required>
+                        <div class="sub-inputs">
+                            <input type="text" placeholder="MM/YY" maxlength="5">
+                            <input type="password" placeholder="CVV" maxlength="3">
+                        </div>
+                    </div>
+                    <p class="payment-note">* El cargo se procesará inmediatamente para validar su pedido.</p>
+                </div>
+
+                <div class="action-area">
+                    <button type="submit" class="btn-submit-premium" id="btnConfirm">
+                        <span class="normal-text">PROCESAR RESERVA & PAGO</span>
+                        <span class="loading-text" style="display:none;"><i class="fas fa-spinner fa-spin"></i> SINCRONIZANDO...</span>
+                    </button>
+                </div>
+            </form>
+            
+            <div id="successMessage" class="success-overlay" style="display:none;">
+                <div class="message-content">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>PAGO APROBADO</h3>
+                    <p>Su orden ha sido enviada al panel de cocina. Los chefs han comenzado la preparación.</p>
+                    <a href="index.html" class="btn-return">VOLVER AL INICIO</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBks0ouNuDD8iNtym6ITR3YRTBJLQM4uuk",
+            authDomain: "restaurante-e06fb.firebaseapp.com",
+            projectId: "restaurante-e06fb",
+            storageBucket: "restaurante-e06fb.firebasestorage.app",
+            messagingSenderId: "264187825636",
+            appId: "1:264187825636:web:84d5c19837a04253114bf1",
+            measurementId: "G-7D7Z99YFNT",
+            databaseURL: "https://restaurante-e06fb-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        const form = document.getElementById('masterBookingForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnConfirm');
+            btn.querySelector('.normal-text').style.display = 'none';
+            btn.querySelector('.loading-text').style.display = 'block';
+            btn.disabled = true;
+
+            const orderData = {
+                nombre: document.getElementById('clientName').value,
+                email: document.getElementById('clientEmail').value,
+                fecha: document.getElementById('resDate').value,
+                hora: document.getElementById('resTime').value,
+                estado: "PAGADO",
+                cocina: "ESPERA",
+                timestamp: Date.now()
+            };
+
+            try {
+                const ordersRef = ref(db, 'pedidos_activos');
+                const newOrderRef = push(ordersRef);
+                await set(newOrderRef, orderData);
+
+                setTimeout(() => {
+                    document.getElementById('form-container').style.opacity = '0.5';
+                    document.getElementById('successMessage').style.display = 'flex';
+                }, 1500);
+
+            } catch (error) {
+                alert("Error de conexión con Firebase");
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>La Carta Real-Time | Gourmet Prestige</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body class="menu-page">
+
+    <nav class="nav-minimal">
+        <div class="container-fluid">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> REGRESAR</a>
+            <img src="assets/img/logo-restaurante.png" alt="Logo" class="logo-center">
+            <div class="cart-status">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="order-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="menu-hero" data-aos="fade">
+        <div class="menu-hero-text">
+            <span class="gold-text">EXPERIENCIA GASTRONÓMICA</span>
+            <h1>NUESTRA CARTA</h1>
+            <p>Selección curada de autor con ingredientes de temporada.</p>
+        </div>
+    </header>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">TODOS</button>
+        <button class="filter-btn" data-filter="entradas">ENTRADAS</button>
+        <button class="filter-btn" data-filter="fuertes">PLATOS FUERTES</button>
+        <button class="filter-btn" data-filter="postres">POSTRES</button>
+    </div>
+
+    <main class="dynamic-grid" id="menu-grid">
+        
+        <div class="menu-item-card 1x1-ratio" data-category="fuertes" data-aos="zoom-in">
+            <div class="card-inner">
+                <img src="assets/img/platos/pizza-prosciutto.jpg" alt="Pizza Prosciutto" class="food-img">
+                <div class="card-details">
+                    <span class="category-tag">RECOMENDADO</span>
+                    <h3>PIZZA PROSCIUTTO</h3>
+                    <p class="description">Masa madre madurada 48h, prosciutto di parma y aceite de trufa blanca.</p>
+                    <div class="price-action">
+                        <span class="price">$28.00</span>
+                        <button class="add-to-cart" onclick="addToOrder('Pizza Prosciutto', 28)">ORDENAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-card 1x1-ratio" data-category="entradas" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-inner">
+                <img src="assets/img/platos/ensalada-cesar.jpg" alt="Ensalada César" class="food-img">
+                <div class="card-details">
+                    <span class="category-tag">FRESH</span>
+                    <h3>ENSALADA CÉSAR</h3>
+                    <p class="description">Lechugas orgánicas, aderezo artesanal, croutons de brioche y parmesano reggiano.</p>
+                    <div class="price-action">
+                        <span class="price">$18.50</span>
+                        <button class="add-to-cart" onclick="addToOrder('Ensalada César', 18.5)">ORDENAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-card 1x1-ratio download-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card-inner pdf-link">
+                <i class="fas fa-file-pdf"></i>
+                <h3>CARTA COMPLETA</h3>
+                <p>Descargue nuestra versión extendida en formato PDF para eventos privados.</p>
+                <a href="assets/pdf/menu-completo.pdf" target="_blank" class="btn-outline-gold">DESCARGAR</a>
+            </div>
+        </div>
+
+    </main>
+
+    <section class="order-summary-bar" id="checkout-bar">
+        <div class="summary-info">
+            <p>TOTAL ESTIMADO: <span id="total-price">$0.00</span></p>
+        </div>
+        <a href="contacto.html" class="btn-pay">PAGAR Y RESERVAR <i class="fas fa-credit-card"></i></a>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBks0ouNuDD8iNtym6ITR3YRTBJLQM4uuk",
+            authDomain: "restaurante-e06fb.firebaseapp.com",
+            projectId: "restaurante-e06fb",
+            storageBucket: "restaurante-e06fb.firebasestorage.app",
+            messagingSenderId: "264187825636",
+            appId: "1:264187825636:web:84d5c19837a04253114bf1",
+            measurementId: "G-7D7Z99YFNT",
+            databaseURL: "https://restaurante-e06fb-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        const stockRef = ref(db, 'menu/stock');
+        onValue(stockRef, (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                console.log("Sincronizando inventario...");
+            }
+        });
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="js/scripts.js"></script>
+</body>
+</html>
